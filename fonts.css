@@ -1,0 +1,58 @@
+
+/* WebDev — Alegreya Typography */
+
+/* Load Alegreya from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Alegreya:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  --font-brand: "Alegreya", Georgia, serif;
+  --font-interface: "Alegreya", Georgia, serif;
+  --font-code: "Courier New", monospace;
+}
+
+/* Main interface */
+html,
+body,
+button,
+input,
+select,
+label,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+nav,
+header,
+footer {
+  font-family: var(--font-interface);
+}
+
+/* Brand */
+.brand {
+  font-family: var(--font-brand);
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+/* Code must remain readable */
+textarea,
+pre,
+code,
+.console {
+  font-family: var(--font-code);
+}
+
+/* Refined typography */
+h1,
+h2,
+h3 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+button {
+  font-weight: 600;
+}
