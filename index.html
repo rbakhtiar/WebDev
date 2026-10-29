@@ -2,231 +2,139 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#070b0a">
-  <meta name="description" content="WebDev Browser Engine — build and preview HTML, CSS and JavaScript.">
-
-  <title>WebDev Browser Engine</title>
-
-  <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-
-  <style>
-    /* Fallback layout styles; style.css supplies the main theme. */
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: #070b0a;
-      color: #e9eee9;
-      font-family: Inter, Arial, sans-serif;
-    }
-
-    button, select, textarea { font: inherit; }
-
-    button {
-      cursor: pointer;
-      border: 1px solid #29483b;
-      border-radius: 8px;
-      padding: 9px 13px;
-      color: #e9eee9;
-      background: #10251c;
-    }
-
-    button:hover { border-color: #c9a866; }
-
-    .topbar {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      padding: 15px 20px;
-      border-bottom: 1px solid #20382d;
-    }
-
-    .brand {
-      color: #e3c782;
-      font-size: 21px;
-      font-weight: 750;
-      letter-spacing: -.5px;
-    }
-
-    .brand small {
-      display: block;
-      margin-top: 4px;
-      color: #8da99a;
-      font-size: 11px;
-      font-weight: 400;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .actions, .tabs, .view-actions {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .primary {
-      background: #174a35;
-      border-color: #347b59;
-    }
-
-    .workspace {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 14px;
-      padding: 14px;
-    }
-
-    .panel {
-      min-width: 0;
-      overflow: hidden;
-      border: 1px solid #20382d;
-      border-radius: 12px;
-      background: #0b110e;
-    }
-
-    .panel-heading {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 12px;
-      border-bottom: 1px solid #20382d;
-    }
-
-    .panel-heading strong { font-size: 13px; }
-
-    .tab {
-      padding: 7px 10px;
-      background: transparent;
-      color: #a9b8ae;
-    }
-
-    .tab.active {
-      color: #e3c782;
-      border-color: #8c7544;
-      background: #182219;
-    }
-
-    .editor {
-      display: block;
-      width: 100%;
-      min-height: 340px;
-      padding: 16px;
-      resize: vertical;
-      border: 0;
-      outline: none;
-      background: #090e0c;
-      color: #d8e8dc;
-      font: 13px/1.7 "Courier New", monospace;
-      tab-size: 2;
-    }
-
-    .preview-shell {
-      min-height: 340px;
-      padding: 10px;
-      background: #111713;
-    }
-
-    #preview {
-      display: block;
-      width: 100%;
-      height: 340px;
-      border: 0;
-      border-radius: 5px;
-      background: white;
-    }
-
-    .console {
-      min-height: 95px;
-      max-height: 190px;
-      overflow: auto;
-      padding: 12px;
-      color: #a9c8b4;
-      background: #070b09;
-      font: 12px/1.7 monospace;
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
-    }
-
-    .status {
-      color: #9cb5a5;
-      font-size: 12px;
-    }
-
-    .footer {
-      padding: 0 18px 18px;
-      color: #74877b;
-      font-size: 12px;
-    }
-
-    @media (max-width: 760px) {
-      .workspace { grid-template-columns: 1fr; padding: 9px; }
-      .topbar { padding: 13px; }
-      .editor { min-height: 280px; }
-      #preview { height: 300px; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#07100c">
+<title>WebDev — Browser IDE</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="fonts.css">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<style>
+:root{color-scheme:dark;--bg:#070b09;--panel:#0c1510;--panel2:#101e16;--line:#263e30;--gold:#d9bd78;--green:#1c5137;--text:#e6eee8;--muted:#91a596;--font:"Alegreya",Georgia,serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px}
+button,input,textarea{font:inherit}
+button{background:var(--panel2);color:var(--text);border:1px solid var(--line);padding:8px 11px;border-radius:7px;cursor:pointer}
+button:hover{border-color:var(--gold)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+input{background:#080e0a;color:var(--text);border:1px solid var(--line);padding:9px;border-radius:7px;min-width:0}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.brand{font-size:25px;font-weight:800;color:var(--gold)}
+.brand small{display:block;font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+.actions{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.primary{background:var(--green);border-color:#397a55}
+.layout{display:grid;grid-template-columns:220px minmax(0,1fr);min-height:calc(100vh - 75px)}
+.sidebar{background:#090f0b;border-right:1px solid var(--line);padding:12px;min-width:0}
+.section-title{font-size:11px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin:8px 0 10px}
+.file-actions{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.file-actions button{flex:1;padding:7px 4px}
+.file-list{display:flex;flex-direction:column;gap:4px}
+.file-item{display:flex;align-items:center;gap:6px;text-align:left;width:100%;overflow:hidden}
+.file-item.active{border-color:var(--gold);background:#1a291e;color:var(--gold)}
+.file-item span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hint{font-size:12px;line-height:1.6;color:var(--muted);margin-top:18px}
+.main{padding:12px;min-width:0}
+.tabs{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+#currentName{font-size:14px;color:var(--gold);overflow-wrap:anywhere}
+.editor{width:100%;height:43vh;min-height:230px;resize:vertical;background:#080e0a;color:#d8e9dc;border:1px solid var(--line);border-radius:9px;padding:15px;font:13px/1.65 "Courier New",monospace;tab-size:2}
+.panel{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:12px;background:var(--panel)}
+.panel-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 12px;border-bottom:1px solid var(--line)}
+.panel-head strong{color:var(--gold)}
+#preview{display:block;width:100%;height:320px;background:white;border:0}
+.terminal{background:#060a08}
+.terminal-output{height:170px;overflow:auto;padding:12px;font:12px/1.7 "Courier New",monospace;white-space:pre-wrap;overflow-wrap:anywhere;color:#b6d6bd}
+.terminal-line{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line);align-items:center}
+.prompt{color:var(--gold);font:13px monospace}
+#command{flex:1;width:100%;font:13px monospace}
+.good{color:#a5ddb2}.bad{color:#ff9b90}.muted{color:var(--muted)}
+@media(max-width:700px){.layout{grid-template-columns:1fr}.sidebar{border-right:0;border-bottom:1px solid var(--line)}.file-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.editor{height:36vh}.main{padding:9px}.top{padding:12px}}
+</style>
 </head>
-
 <body>
-  <header class="topbar">
-    <div class="brand">
-      WebDev
-      <small>Browser Engine · HTML · CSS · JS</small>
-    </div>
+<header class="top">
+  <div class="brand">WebDev<small>Browser IDE · Workspace</small></div>
+  <div class="actions">
+    <span id="status" class="muted">Ready</span>
+    <button id="run" class="primary">▶ Run</button>
+    <button id="download">Download file</button>
+    <button id="export">Export HTML</button>
+  </div>
+</header>
 
-    <div class="actions">
-      <span id="status" class="status">Ready</span>
-      <button id="resetBtn" type="button">Reset</button>
-      <button id="exportBtn" type="button">Export HTML</button>
-      <button id="runBtn" class="primary" type="button">▶ Run</button>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="section-title">Explorer / Files</div>
+    <div class="file-actions">
+      <button id="newFile">＋ File</button>
+      <button id="renameFile">Rename</button>
+      <button id="deleteFile">Delete</button>
     </div>
-  </header>
+    <div id="files" class="file-list"></div>
+    <p class="hint">Files are stored in this browser. Create files with their extensions, such as <code>index.html</code>, <code>style.css</code> and <code>app.js</code>.</p>
+    <div class="section-title">Workspace</div>
+    <button id="reset" style="width:100%">Reset demo project</button>
+  </aside>
 
-  <main class="workspace">
-    <section class="panel" aria-label="Code editor">
-      <div class="panel-heading">
-        <strong>Code Editor</strong>
-        <div class="tabs" role="tablist" aria-label="Code language">
-          <button class="tab active" data-language="html" role="tab"
-            aria-selected="true" type="button">HTML</button>
-          <button class="tab" data-language="css" role="tab"
-            aria-selected="false" type="button">CSS</button>
-          <button class="tab" data-language="js" role="tab"
-            aria-selected="false" type="button">JavaScript</button>
-        </div>
+  <main class="main">
+    <div class="tabs">
+      <strong id="currentName">index.html</strong>
+      <span class="muted">Editor</span>
+    </div>
+    <textarea id="editor" class="editor" spellcheck="false" aria-label="File editor"></textarea>
+
+    <section class="panel">
+      <div class="panel-head">
+        <strong>Live Preview</strong>
+        <button id="refresh">Refresh</button>
       </div>
+      <iframe id="preview" title="Project preview" sandbox="allow-scripts allow-forms allow-modals"></iframe>
+    </section>
 
-      <textarea id="htmlEditor" class="editor" spellcheck="false"
-        aria-label="HTML code editor"><!DOCTYPE html>
+    <section class="panel terminal">
+      <div class="panel-head">
+        <strong>WebDev Terminal</strong>
+        <span class="muted">Virtual workspace shell</span>
+        <button id="clearTerminal">Clear</button>
+      </div>
+      <div id="output" class="terminal-output" role="log" aria-live="polite">WebDev Terminal v1.0
+Type help to see available commands.
+This terminal operates on your WebDev project files, not your Chromebook's operating system.</div>
+      <form id="terminalForm" class="terminal-line">
+        <span class="prompt">webdev $</span>
+        <input id="command" autocomplete="off" spellcheck="false" placeholder="help, ls, cat index.html…" aria-label="Terminal command">
+        <button type="submit" class="primary">Run</button>
+      </form>
+    </section>
+  </main>
+</div>
+
+<script>
+(() => {
+"use strict";
+
+const $ = s => document.querySelector(s);
+const STORE = "webdev-ide-project-v2";
+
+const starter = {
+  "index.html": `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>My WebDev Project</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>My Project</title>
 </head>
 <body>
   <main class="card">
     <p class="eyebrow">MY FIRST PROJECT</p>
     <h1>Hello, WebDev.</h1>
-    <p>Edit the HTML, CSS and JavaScript to build something great.</p>
-    <button id="demoButton">Try it</button>
+    <p>Edit index.html, style.css and app.js.</p>
+    <button id="hello">Try it</button>
     <p id="message"></p>
   </main>
 </body>
-</html></textarea>
-
-      <textarea id="cssEditor" class="editor" spellcheck="false"
-        aria-label="CSS code editor" hidden>body {
+</html>`,
+  "style.css": `body {
   margin: 0;
   min-height: 100vh;
   display: grid;
@@ -235,351 +143,431 @@
   color: #eef5ef;
   font-family: Arial, sans-serif;
 }
-
 .card {
   max-width: 440px;
   margin: 20px;
-  padding: 36px;
+  padding: 32px;
   border: 1px solid #315b43;
-  border-radius: 20px;
+  border-radius: 18px;
   background: #10271b;
-  box-shadow: 0 20px 70px #0005;
 }
-
-.eyebrow {
-  color: #d9bd78;
-  font-size: 11px;
-  letter-spacing: 2px;
-}
-
-h1 { font-size: clamp(28px, 6vw, 42px); }
-
+.eyebrow { color: #d9bd78; letter-spacing: 2px; }
 button {
-  padding: 11px 18px;
+  padding: 10px 16px;
   border: 0;
-  border-radius: 8px;
+  border-radius: 7px;
   background: #d9bd78;
-  color: #142117;
   cursor: pointer;
-}</textarea>
+}`,
+  "app.js": `document.querySelector("#hello")?.addEventListener("click", () => {
+  document.querySelector("#message").textContent = "JavaScript works!";
+});
+console.log("Project loaded.");`,
+  "README.md": "# My WebDev Project\n\nEdit the files and press Run."
+};
 
-      <textarea id="jsEditor" class="editor" spellcheck="false"
-        aria-label="JavaScript code editor" hidden>const button = document.querySelector("#demoButton");
-const message = document.querySelector("#message");
+let project = {};
+let active = "index.html";
+const editor = $("#editor");
+const fileList = $("#files");
+const output = $("#output");
+const preview = $("#preview");
+let runId = 0;
 
-button.addEventListener("click", () => {
-  message.textContent = "It works! Your JavaScript is running.";
+function setStatus(s) { $("#status").textContent = s; }
+
+function persist() {
+  try {
+    localStorage.setItem(STORE, JSON.stringify({project, active}));
+    setStatus("Saved locally");
+  } catch {
+    setStatus("Could not save locally");
+  }
+}
+
+function load() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORE) || "null");
+    if (saved && saved.project && typeof saved.project === "object") {
+      project = saved.project;
+      active = project[saved.active] !== undefined ? saved.active : Object.keys(project)[0];
+    } else {
+      project = {...starter};
+    }
+  } catch {
+    project = {...starter};
+  }
+  if (!Object.keys(project).length) project = {...starter};
+  if (!active || project[active] === undefined) active = Object.keys(project)[0];
+}
+
+function renderFiles() {
+  fileList.replaceChildren();
+  Object.keys(project).sort((a,b) => a.localeCompare(b)).forEach(name => {
+    const button = document.createElement("button");
+    button.className = "file-item" + (name === active ? " active" : "");
+    button.title = name;
+    const icon = document.createElement("span");
+    icon.textContent = fileIcon(name);
+    const label = document.createElement("span");
+    label.textContent = name;
+    button.append(icon, label);
+    button.addEventListener("click", () => switchFile(name));
+    fileList.append(button);
+  });
+}
+
+function fileIcon(name) {
+  if (name.endsWith(".html")) return "◇";
+  if (name.endsWith(".css")) return "◈";
+  if (name.endsWith(".js")) return "⌘";
+  if (name.endsWith(".json")) return "{}";
+  return "▤";
+}
+
+function switchFile(name) {
+  if (!(name in project)) return;
+  project[active] = editor.value;
+  active = name;
+  editor.value = project[active];
+  $("#currentName").textContent = active;
+  renderFiles();
+  persist();
+}
+
+editor.addEventListener("input", () => {
+  project[active] = editor.value;
+  persist();
 });
 
-console.log("WebDev project loaded successfully.");</textarea>
-    </section>
+editor.addEventListener("keydown", event => {
+  if (event.key === "Tab") {
+    event.preventDefault();
+    editor.setRangeText("  ", editor.selectionStart, editor.selectionEnd, "end");
+    editor.dispatchEvent(new Event("input"));
+  }
+  if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+    event.preventDefault();
+    runProject();
+  }
+});
 
-    <section class="panel" aria-label="Live preview">
-      <div class="panel-heading">
-        <strong>Live Preview</strong>
-        <div class="view-actions">
-          <button type="button" data-width="100%" aria-pressed="true">Desktop</button>
-          <button type="button" data-width="768px" aria-pressed="false">Tablet</button>
-          <button type="button" data-width="375px" aria-pressed="false">Mobile</button>
-        </div>
-      </div>
+function validName(name) {
+  return name && name.length <= 120 &&
+    !name.includes("/") && !name.includes("\\") &&
+    name !== "." && name !== ".." &&
+    !/[<>:"|?*\u0000-\u001f]/.test(name);
+}
 
-      <div class="preview-shell">
-        <iframe id="preview" title="Your project preview"
-          sandbox="allow-scripts allow-forms allow-modals"></iframe>
-      </div>
+function createFile(name, content = "") {
+  if (!validName(name)) return "Invalid filename. Use a simple filename with an extension.";
+  if (name in project) return "That file already exists.";
+  project[active] = editor.value;
+  project[name] = content;
+  active = name;
+  editor.value = content;
+  $("#currentName").textContent = active;
+  renderFiles();
+  persist();
+  return "Created " + name;
+}
 
-      <div class="panel-heading">
-        <strong>Console</strong>
-        <button id="clearConsoleBtn" type="button">Clear</button>
-      </div>
-      <div id="console" class="console" role="log" aria-live="polite">Ready to run your code.</div>
-    </section>
-  </main>
+function rename(oldName, newName) {
+  if (!(oldName in project)) return "File not found: " + oldName;
+  if (!validName(newName)) return "Invalid new filename.";
+  if (newName in project) return "A file with that name already exists.";
+  project[active] = editor.value;
+  const content = project[oldName];
+  delete project[oldName];
+  project[newName] = content;
+  if (active === oldName) active = newName;
+  editor.value = project[active];
+  $("#currentName").textContent = active;
+  renderFiles();
+  persist();
+  return "Renamed " + oldName + " to " + newName;
+}
 
-  <footer class="footer">
-    WebDev uses your browser's native rendering engine. Your editor code is saved locally in this browser.
-  </footer>
+function removeFile(name) {
+  if (!(name in project)) return "File not found: " + name;
+  if (Object.keys(project).length === 1) return "Cannot delete the last file.";
+  delete project[name];
+  if (active === name) {
+    active = Object.keys(project)[0];
+    editor.value = project[active];
+    $("#currentName").textContent = active;
+  }
+  renderFiles();
+  persist();
+  return "Deleted " + name;
+}
 
-  <script>
-    (() => {
-      "use strict";
+function currentFiles() {
+  project[active] = editor.value;
+  return project;
+}
 
-      const $ = (selector) => document.querySelector(selector);
+function getProjectHTML() {
+  const files = currentFiles();
+  let html = files["index.html"] || "<!doctype html><html><head></head><body></body></html>";
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
 
-      const editors = {
-        html: $("#htmlEditor"),
-        css: $("#cssEditor"),
-        js: $("#jsEditor")
-      };
+  // Inline project CSS and JavaScript for a portable single-file preview.
+  const css = files["style.css"] || "";
+  const js = files["app.js"] || "";
 
-      const preview = $("#preview");
-      const consoleBox = $("#console");
-      const status = $("#status");
+  const style = doc.createElement("style");
+  style.textContent = css;
+  doc.head.appendChild(style);
 
-      const STORAGE_KEY = "webdev-project-v1";
-      let activeLanguage = "html";
-      let currentRunId = 0;
+  // Use an external script element to preserve normal script parsing.
+  const script = doc.createElement("script");
+  script.textContent = js;
+  doc.body.appendChild(script);
 
-      function setStatus(message) {
-        status.textContent = message;
-      }
+  return "<!doctype html>\n" + doc.documentElement.outerHTML;
+}
 
-      function log(message, type = "log") {
-        const line = document.createElement("div");
-        line.textContent = "[" + type + "] " + message;
+function runProject() {
+  try {
+    runId++;
+    preview.srcdoc = getProjectHTML();
+    setStatus("Preview running");
+    terminalWrite("Preview updated.", "good");
+  } catch (error) {
+    terminalWrite("Run error: " + error.message, "bad");
+    setStatus("Preview failed");
+  }
+}
 
-        if (type === "error") line.style.color = "#ff8c8c";
-        if (type === "warn") line.style.color = "#e3c782";
+function download(name, content) {
+  const url = URL.createObjectURL(new Blob([content], {type:"text/plain;charset=utf-8"}));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = name;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
 
-        consoleBox.appendChild(line);
-        consoleBox.scrollTop = consoleBox.scrollHeight;
-      }
+$("#newFile").addEventListener("click", () => {
+  const name = prompt("New filename (example: app.js):");
+  if (name === null) return;
+  const result = createFile(name.trim());
+  if (result.startsWith("Invalid") || result.includes("already exists")) alert(result);
+});
 
-      function saveProject() {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify({
-            html: editors.html.value,
-            css: editors.css.value,
-            js: editors.js.value
-          }));
-          setStatus("Saved locally");
-        } catch (error) {
-          setStatus("Local saving unavailable");
-        }
-      }
+$("#renameFile").addEventListener("click", () => {
+  const name = prompt("Rename file:", active);
+  if (name === null || name.trim() === active) return;
+  const result = rename(active, name.trim());
+  if (result.startsWith("Invalid") || result.includes("already exists")) alert(result);
+});
 
-      function loadProject() {
-        try {
-          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+$("#deleteFile").addEventListener("click", () => {
+  if (!confirm("Delete " + active + "?")) return;
+  const result = removeFile(active);
+  if (result.startsWith("Cannot")) alert(result);
+});
 
-          if (saved) {
-            for (const language of ["html", "css", "js"]) {
-              if (typeof saved[language] === "string") {
-                editors[language].value = saved[language];
-              }
-            }
-          }
-        } catch (error) {
-          console.warn("Could not restore the saved project.");
-        }
-      }
+$("#run").addEventListener("click", runProject);
+$("#refresh").addEventListener("click", runProject);
 
-      function buildDocument() {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(
-          editors.html.value || "<!DOCTYPE html><html><head></head><body></body></html>",
-          "text/html"
-        );
+$("#download").addEventListener("click", () => {
+  project[active] = editor.value;
+  download(active, project[active]);
+});
 
-        if (!doc.head) {
-          const head = doc.createElement("head");
-          doc.documentElement.prepend(head);
-        }
+$("#export").addEventListener("click", () => {
+  try { download("webdev-project.html", getProjectHTML()); }
+  catch (error) { alert("Export failed: " + error.message); }
+});
 
-        if (!doc.body) {
-          doc.documentElement.append(doc.createElement("body"));
-        }
+$("#reset").addEventListener("click", () => {
+  if (!confirm("Replace your current project with the demo files?")) return;
+  project = {...starter};
+  active = "index.html";
+  editor.value = project[active];
+  $("#currentName").textContent = active;
+  renderFiles();
+  persist();
+  runProject();
+});
 
-        const viewport = doc.createElement("meta");
-        viewport.name = "viewport";
-        viewport.content = "width=device-width, initial-scale=1";
-        doc.head.appendChild(viewport);
+function terminalWrite(text, kind = "") {
+  const line = document.createElement("div");
+  line.textContent = text;
+  if (kind) line.className = kind;
+  output.append(line);
+  output.scrollTop = output.scrollHeight;
+}
 
-        const css = doc.createElement("style");
-        css.textContent = editors.css.value;
-        doc.head.appendChild(css);
+function tokenize(input) {
+  const tokens = [];
+  const regex = /"([^"]*)"|'([^']*)'|(\S+)/g;
+  let match;
+  while ((match = regex.exec(input)) !== null) {
+    tokens.push(match[1] ?? match[2] ?? match[3]);
+  }
+  return tokens;
+}
 
-        // Report console messages from the isolated preview.
-        const bridge = doc.createElement("script");
-        bridge.textContent = `
-          (() => {
-            const runId = ${currentRunId};
-            const send = (type, args) => {
-              let message;
-              try {
-                message = Array.from(args).map(value => {
-                  if (typeof value === "string") return value;
-                  try { return JSON.stringify(value); }
-                  catch { return String(value); }
-                }).join(" ");
-              } catch {
-                message = "Unable to format console message";
-              }
+function execute(input) {
+  const args = tokenize(input.trim());
+  const cmd = (args.shift() || "").toLowerCase();
+  if (!cmd) return;
 
-              parent.postMessage({
-                source: "webdev-engine",
-                runId,
-                type,
-                message
-              }, "*");
-            };
+  const files = currentFiles();
+  const rest = args.join(" ");
 
-            ["log", "info", "warn", "error"].forEach(type => {
-              const original = console[type].bind(console);
-              console[type] = (...args) => {
-                send(type, args);
-                original(...args);
-              };
-            });
+  switch (cmd) {
+    case "help":
+      terminalWrite(`Available commands:
+help                    Show this help
+ls                      List project files
+tree                    Show the project file tree
+pwd                     Show the virtual workspace path
+cat <file>              Print a file
+touch <file>            Create an empty file
+mkdir <name>            Create a directory marker
+write <file> "text"     Replace a file's contents
+append <file> "text"    Append text to a file
+rm <file>               Delete a file
+mv <old> <new>          Rename a file
+echo "text"             Print text
+date                    Show current date and time
+clear                   Clear terminal output
+run                     Run index.html in the preview
+download <file>         Download a project file
+whoami                  Show the virtual user
+`); break;
 
-            addEventListener("error", event => {
-              send("error", [event.message || "Script error"]);
-            });
-          })();
-        `;
+    case "ls":
+      terminalWrite(Object.keys(files).sort().join("\n") || "(empty)");
+      break;
 
-        doc.head.appendChild(bridge);
-
-        // Add the user's JavaScript as a separate script element.
-        const userScript = doc.createElement("script");
-        userScript.textContent = editors.js.value;
-        doc.body.appendChild(userScript);
-
-        return "<!DOCTYPE html>\n" + doc.documentElement.outerHTML;
-      }
-
-      function runCode() {
-        currentRunId++;
-        consoleBox.replaceChildren();
-        setStatus("Running…");
-
-        try {
-          preview.srcdoc = buildDocument();
-          setStatus("Preview updated");
-        } catch (error) {
-          log(error.message || String(error), "error");
-          setStatus("Preview failed");
-        }
-      }
-
-      function switchTab(language) {
-        activeLanguage = language;
-
-        for (const [key, editor] of Object.entries(editors)) {
-          editor.hidden = key !== language;
-        }
-
-        document.querySelectorAll("[data-language]").forEach(button => {
-          const selected = button.dataset.language === language;
-          button.classList.toggle("active", selected);
-          button.setAttribute("aria-selected", String(selected));
-        });
-      }
-
-      function exportHTML() {
-        const html = buildDocument();
-        const blob = new Blob([html], { type: "text/html;charset=utf-8" });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-
-        link.href = url;
-        link.download = "webdev-project.html";
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
-        setStatus("HTML exported");
-      }
-
-      function resetProject() {
-        const confirmed = confirm(
-          "Reset the editor to the starter project? Your current code will be replaced."
-        );
-
-        if (!confirmed) return;
-
-        localStorage.removeItem(STORAGE_KEY);
-        location.reload();
-      }
-
-      // Editor tabs.
-      document.querySelectorAll("[data-language]").forEach(button => {
-        button.addEventListener("click", () => {
-          switchTab(button.dataset.language);
-        });
+    case "tree":
+      terminalWrite("WebDev/");
+      Object.keys(files).sort().forEach((name, i, arr) => {
+        terminalWrite((i === arr.length - 1 ? "└── " : "├── ") + name);
       });
+      break;
 
-      // Autosave when code changes.
-      Object.values(editors).forEach(editor => {
-        editor.addEventListener("input", saveProject);
+    case "pwd":
+      terminalWrite("/webdev/project");
+      break;
 
-        editor.addEventListener("keydown", event => {
-          if (event.key === "Tab") {
-            event.preventDefault();
+    case "whoami":
+      terminalWrite("webdev-user (virtual workspace)");
+      break;
 
-            const start = editor.selectionStart;
-            const end = editor.selectionEnd;
+    case "date":
+      terminalWrite(new Date().toString());
+      break;
 
-            editor.setRangeText("  ", start, end, "end");
-            saveProject();
-          }
+    case "echo":
+      terminalWrite(rest);
+      break;
 
-          if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
-            event.preventDefault();
-            runCode();
-          }
-        });
-      });
+    case "cat":
+      if (!args[0]) terminalWrite("Usage: cat <filename>", "bad");
+      else if (!(args[0] in files)) terminalWrite("File not found: " + args[0], "bad");
+      else terminalWrite(files[args[0]]);
+      break;
 
-      $("#runBtn").addEventListener("click", runCode);
-      $("#exportBtn").addEventListener("click", exportHTML);
-      $("#resetBtn").addEventListener("click", resetProject);
-      $("#clearConsoleBtn").addEventListener("click", () => {
-        consoleBox.replaceChildren();
-      });
+    case "touch":
+      if (!args[0]) terminalWrite("Usage: touch <filename>", "bad");
+      else terminalWrite(createFile(args[0]), "good");
+      break;
 
-      // Preview width controls.
-      document.querySelectorAll("[data-width]").forEach(button => {
-        button.addEventListener("click", () => {
-          const width = button.dataset.width;
-          const shell = $(".preview-shell");
+    case "mkdir":
+      if (!args[0]) terminalWrite("Usage: mkdir <directory-name>", "bad");
+      else terminalWrite("Directories aren't supported yet; project files currently live in one flat workspace.", "bad");
+      break;
 
-          shell.style.display = "flex";
-          shell.style.justifyContent = "center";
-          preview.style.width = width;
-          preview.style.maxWidth = "100%";
-
-          document.querySelectorAll("[data-width]").forEach(item => {
-            item.setAttribute(
-              "aria-pressed",
-              String(item === button)
-            );
-          });
-        });
-      });
-
-      // Accept messages only from the current preview iframe and run.
-      window.addEventListener("message", event => {
-        if (event.source !== preview.contentWindow) return;
-
-        const data = event.data;
-
-        if (!data ||
-            data.source !== "webdev-engine" ||
-            data.runId !== currentRunId) {
-          return;
-        }
-
-        log(data.message, data.type);
-      });
-
-      loadProject();
-      switchTab(activeLanguage);
-      runCode();
-
-      // Register offline support when hosted on HTTPS or localhost.
-      if ("serviceWorker" in navigator) {
-        window.addEventListener("load", () => {
-          navigator.serviceWorker.register("./sw.js")
-            .then(() => console.log("WebDev offline support registered."))
-            .catch(error => {
-              console.warn("Service worker registration failed:", error);
-            });
-        });
+    case "write": {
+      const name = args.shift();
+      const content = args.join(" ");
+      if (!name) terminalWrite('Usage: write <filename> "text"', "bad");
+      else if (!(name in files)) terminalWrite("File not found. Create it with touch first.", "bad");
+      else {
+        files[name] = content;
+        if (active === name) editor.value = content;
+        persist();
+        terminalWrite("Wrote " + name, "good");
       }
-    })();
-  </script>
+      break;
+    }
+
+    case "append": {
+      const name = args.shift();
+      const content = args.join(" ");
+      if (!name) terminalWrite('Usage: append <filename> "text"', "bad");
+      else if (!(name in files)) terminalWrite("File not found. Create it with touch first.", "bad");
+      else {
+        files[name] += content;
+        if (active === name) editor.value = files[name];
+        persist();
+        terminalWrite("Appended to " + name, "good");
+      }
+      break;
+    }
+
+    case "rm":
+      if (!args[0]) terminalWrite("Usage: rm <filename>", "bad");
+      else terminalWrite(removeFile(args[0]));
+      break;
+
+    case "mv":
+      if (args.length < 2) terminalWrite("Usage: mv <old-name> <new-name>", "bad");
+      else terminalWrite(rename(args[0], args[1]));
+      break;
+
+    case "clear":
+      output.replaceChildren();
+      break;
+
+    case "run":
+      runProject();
+      break;
+
+    case "download":
+      if (!args[0] || !(args[0] in files)) terminalWrite("Usage: download <existing-filename>", "bad");
+      else {
+        download(args[0], files[args[0]]);
+        terminalWrite("Download requested for " + args[0], "good");
+      }
+      break;
+
+    default:
+      terminalWrite("Command not found: " + cmd + ". Type help.", "bad");
+  }
+}
+
+$("#terminalForm").addEventListener("submit", event => {
+  event.preventDefault();
+  const input = $("#command").value;
+  if (!input.trim()) return;
+  terminalWrite("webdev $ " + input);
+  try { execute(input); }
+  catch (error) { terminalWrite("Error: " + error.message, "bad"); }
+  $("#command").value = "";
+});
+
+$("#clearTerminal").addEventListener("click", () => output.replaceChildren());
+
+load();
+editor.value = project[active] ?? "";
+$("#currentName").textContent = active;
+renderFiles();
+runProject();
+
+if ("serviceWorker" in navigator) {
+  addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
+}
+})();
+</script>
 </body>
 </html>
