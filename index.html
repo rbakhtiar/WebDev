@@ -3,541 +3,583 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#070b0a">
-  <meta name="description" content="WebDev Browser Engine — build and preview websites in your browser.">
-  <title>WebDev — Browser Engine</title>
+  <meta name="description" content="WebDev Browser Engine — build and preview HTML, CSS and JavaScript.">
+
+  <title>WebDev Browser Engine</title>
+
   <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+
+  <style>
+    /* Fallback layout styles; style.css supplies the main theme. */
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #070b0a;
+      color: #e9eee9;
+      font-family: Inter, Arial, sans-serif;
+    }
+
+    button, select, textarea { font: inherit; }
+
+    button {
+      cursor: pointer;
+      border: 1px solid #29483b;
+      border-radius: 8px;
+      padding: 9px 13px;
+      color: #e9eee9;
+      background: #10251c;
+    }
+
+    button:hover { border-color: #c9a866; }
+
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 15px 20px;
+      border-bottom: 1px solid #20382d;
+    }
+
+    .brand {
+      color: #e3c782;
+      font-size: 21px;
+      font-weight: 750;
+      letter-spacing: -.5px;
+    }
+
+    .brand small {
+      display: block;
+      margin-top: 4px;
+      color: #8da99a;
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .actions, .tabs, .view-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .primary {
+      background: #174a35;
+      border-color: #347b59;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 14px;
+      padding: 14px;
+    }
+
+    .panel {
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid #20382d;
+      border-radius: 12px;
+      background: #0b110e;
+    }
+
+    .panel-heading {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px;
+      border-bottom: 1px solid #20382d;
+    }
+
+    .panel-heading strong { font-size: 13px; }
+
+    .tab {
+      padding: 7px 10px;
+      background: transparent;
+      color: #a9b8ae;
+    }
+
+    .tab.active {
+      color: #e3c782;
+      border-color: #8c7544;
+      background: #182219;
+    }
+
+    .editor {
+      display: block;
+      width: 100%;
+      min-height: 340px;
+      padding: 16px;
+      resize: vertical;
+      border: 0;
+      outline: none;
+      background: #090e0c;
+      color: #d8e8dc;
+      font: 13px/1.7 "Courier New", monospace;
+      tab-size: 2;
+    }
+
+    .preview-shell {
+      min-height: 340px;
+      padding: 10px;
+      background: #111713;
+    }
+
+    #preview {
+      display: block;
+      width: 100%;
+      height: 340px;
+      border: 0;
+      border-radius: 5px;
+      background: white;
+    }
+
+    .console {
+      min-height: 95px;
+      max-height: 190px;
+      overflow: auto;
+      padding: 12px;
+      color: #a9c8b4;
+      background: #070b09;
+      font: 12px/1.7 monospace;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .status {
+      color: #9cb5a5;
+      font-size: 12px;
+    }
+
+    .footer {
+      padding: 0 18px 18px;
+      color: #74877b;
+      font-size: 12px;
+    }
+
+    @media (max-width: 760px) {
+      .workspace { grid-template-columns: 1fr; padding: 9px; }
+      .topbar { padding: 13px; }
+      .editor { min-height: 280px; }
+      #preview { height: 300px; }
+    }
+  </style>
 </head>
 
 <body>
-<div class="app">
-
-  <header>
-    <div class="brand">Web<span>Dev</span></div>
-    <div class="engine-label">BROWSER ENGINE / 01</div>
-    <div class="spacer"></div>
-    <div class="status" id="status">● READY</div>
-    <button id="clearBtn">Clear Console</button>
-    <button class="run" id="runBtn">▶ Run</button>
-  </header>
-
-  <div class="toolbar">
-    <button id="resetBtn" title="Reset starter project">↶</button>
-    <button id="refreshBtn" title="Run code again">↻</button>
-
-    <div class="address">
-      <span>◈</span>
-      <input id="address" value="webdev://local-preview" readonly aria-label="Preview address">
+  <header class="topbar">
+    <div class="brand">
+      WebDev
+      <small>Browser Engine · HTML · CSS · JS</small>
     </div>
 
-    <button id="exportBtn">Export HTML</button>
-  </div>
+    <div class="actions">
+      <span id="status" class="status">Ready</span>
+      <button id="resetBtn" type="button">Reset</button>
+      <button id="exportBtn" type="button">Export HTML</button>
+      <button id="runBtn" class="primary" type="button">▶ Run</button>
+    </div>
+  </header>
 
   <main class="workspace">
-
-    <section class="left">
-      <div class="section-head">
-        <div class="dot"></div>
-        <span>EDITOR</span>
-        <div class="spacer"></div>
-        <span id="fileLabel" style="color:var(--gold)">index.html</span>
-      </div>
-
-      <div class="section-head" style="height:42px">
-        <div class="tabs">
-          <button class="tab active" data-lang="html">HTML</button>
-          <button class="tab" data-lang="css">CSS</button>
-          <button class="tab" data-lang="js">JavaScript</button>
+    <section class="panel" aria-label="Code editor">
+      <div class="panel-heading">
+        <strong>Code Editor</strong>
+        <div class="tabs" role="tablist" aria-label="Code language">
+          <button class="tab active" data-language="html" role="tab"
+            aria-selected="true" type="button">HTML</button>
+          <button class="tab" data-language="css" role="tab"
+            aria-selected="false" type="button">CSS</button>
+          <button class="tab" data-language="js" role="tab"
+            aria-selected="false" type="button">JavaScript</button>
         </div>
       </div>
 
-      <div class="editor-wrap">
-        <div id="lineNumbers" aria-hidden="true">1</div>
-        <textarea
-          id="editor"
-          spellcheck="false"
-          autocapitalize="off"
-          autocomplete="off"
-          autocorrect="off"
-          aria-label="Code editor"
-        ></textarea>
-      </div>
-
-      <div class="editor-footer">
-        <span id="cursorInfo">Ln 1, Col 1</span>
-        <span id="languageInfo">HTML · UTF-8</span>
-      </div>
-    </section>
-
-    <section class="right">
-      <div class="section-head">
-        <div class="dot"></div>
-        <span>LIVE PREVIEW</span>
-
-        <div class="preview-tools">
-          <button data-size="desktop">Desktop</button>
-          <button data-size="tablet">Tablet</button>
-          <button data-size="mobile">Mobile</button>
-        </div>
-      </div>
-
-      <div class="preview-area">
-        <div class="device desktop" id="device">
-          <div class="device-bar">
-            <div class="circle"></div>
-            <div class="circle"></div>
-            <div class="circle"></div>
-            <span style="margin-left:6px">local preview</span>
-          </div>
-
-          <iframe
-            id="preview"
-            title="WebDev website preview"
-            sandbox="allow-scripts allow-forms allow-modals"
-          ></iframe>
-        </div>
-      </div>
-
-      <div class="console">
-        <div class="console-head">
-          <span>ENGINE CONSOLE</span>
-          <button id="clearOutputBtn" style="padding:4px 8px;font-size:10px">
-            Clear output
-          </button>
-        </div>
-
-        <div id="consoleOutput" aria-live="polite">
-          <div class="log">WebDev Browser Engine initialized.</div>
-          <div class="log">Waiting for your code.</div>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <footer>
-    <span>WEBDEV ENGINE <strong>v1.1.0</strong></span>
-    <span>HTML · CSS · JAVASCRIPT</span>
-    <span id="saveStatus">LOCAL WORKSPACE</span>
-  </footer>
-
-</div>
-
-<script>
-"use strict";
-
-const $ = selector => document.querySelector(selector);
-
-const editor = $("#editor");
-const preview = $("#preview");
-const output = $("#consoleOutput");
-const status = $("#status");
-
-const STORAGE_KEY = "webdev-engine-project-v1";
-
-const defaults = {
-  html: `<!DOCTYPE html>
+      <textarea id="htmlEditor" class="editor" spellcheck="false"
+        aria-label="HTML code editor"><!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>My WebDev Project</title>
 </head>
 <body>
   <main class="card">
-    <div class="eyebrow">WEBDEV ENGINE</div>
-    <h1>Build something <span>remarkable.</span></h1>
-    <p>Your code. Your ideas. Your website.</p>
-    <button id="hello">Test JavaScript</button>
-    <div id="result"></div>
+    <p class="eyebrow">MY FIRST PROJECT</p>
+    <h1>Hello, WebDev.</h1>
+    <p>Edit the HTML, CSS and JavaScript to build something great.</p>
+    <button id="demoButton">Try it</button>
+    <p id="message"></p>
   </main>
 </body>
-</html>`,
+</html></textarea>
 
-  css: `* {
-  box-sizing: border-box;
-}
-
-body {
+      <textarea id="cssEditor" class="editor" spellcheck="false"
+        aria-label="CSS code editor" hidden>body {
   margin: 0;
   min-height: 100vh;
   display: grid;
   place-items: center;
-  background: #08130e;
-  color: #edf7ef;
+  background: #07130e;
+  color: #eef5ef;
   font-family: Arial, sans-serif;
 }
 
 .card {
-  max-width: 600px;
-  padding: 48px 32px;
-  text-align: center;
+  max-width: 440px;
+  margin: 20px;
+  padding: 36px;
+  border: 1px solid #315b43;
+  border-radius: 20px;
+  background: #10271b;
+  box-shadow: 0 20px 70px #0005;
 }
 
 .eyebrow {
-  color: #bba878;
+  color: #d9bd78;
   font-size: 11px;
-  letter-spacing: 4px;
+  letter-spacing: 2px;
 }
 
-h1 {
-  font-size: clamp(32px, 7vw, 58px);
-  line-height: 1.1;
-  letter-spacing: -2px;
-}
-
-h1 span {
-  color: #38d996;
-}
-
-p {
-  color: #a1b4a7;
-  line-height: 1.8;
-}
+h1 { font-size: clamp(28px, 6vw, 42px); }
 
 button {
-  margin-top: 18px;
-  padding: 12px 20px;
+  padding: 11px 18px;
   border: 0;
   border-radius: 8px;
-  background: #38d996;
-  color: #07110d;
-  font-weight: bold;
+  background: #d9bd78;
+  color: #142117;
   cursor: pointer;
-}
+}</textarea>
 
-#result {
-  margin-top: 18px;
-  color: #d8bd83;
-}`,
+      <textarea id="jsEditor" class="editor" spellcheck="false"
+        aria-label="JavaScript code editor" hidden>const button = document.querySelector("#demoButton");
+const message = document.querySelector("#message");
 
-  js: `console.log("WebDev Engine is running.");
+button.addEventListener("click", () => {
+  message.textContent = "It works! Your JavaScript is running.";
+});
 
-document.getElementById("hello").addEventListener("click", () => {
-  document.getElementById("result").textContent =
-    "JavaScript works!";
-  console.log("Button clicked successfully.");
-});`
-};
+console.log("WebDev project loaded successfully.");</textarea>
+    </section>
 
-let files = { ...defaults };
-let activeLang = "html";
-let debounceTimer;
-let executionTimer;
-let runId = 0;
+    <section class="panel" aria-label="Live preview">
+      <div class="panel-heading">
+        <strong>Live Preview</strong>
+        <div class="view-actions">
+          <button type="button" data-width="100%" aria-pressed="true">Desktop</button>
+          <button type="button" data-width="768px" aria-pressed="false">Tablet</button>
+          <button type="button" data-width="375px" aria-pressed="false">Mobile</button>
+        </div>
+      </div>
 
-function addLog(message, type = "log") {
-  const line = document.createElement("div");
-  line.className = type;
-  line.textContent = String(message);
+      <div class="preview-shell">
+        <iframe id="preview" title="Your project preview"
+          sandbox="allow-scripts allow-forms allow-modals"></iframe>
+      </div>
 
-  output.appendChild(line);
-  output.scrollTop = output.scrollHeight;
-}
+      <div class="panel-heading">
+        <strong>Console</strong>
+        <button id="clearConsoleBtn" type="button">Clear</button>
+      </div>
+      <div id="console" class="console" role="log" aria-live="polite">Ready to run your code.</div>
+    </section>
+  </main>
 
-function clearConsole() {
-  output.replaceChildren();
-}
+  <footer class="footer">
+    WebDev uses your browser's native rendering engine. Your editor code is saved locally in this browser.
+  </footer>
 
-function updateLineNumbers() {
-  const count = editor.value.split("\n").length;
-
-  $("#lineNumbers").textContent = Array.from(
-    { length: count },
-    (_, index) => index + 1
-  ).join("\n");
-
-  $("#lineNumbers").scrollTop = editor.scrollTop;
-}
-
-function updateCursor() {
-  const before = editor.value.slice(0, editor.selectionStart);
-  const lines = before.split("\n");
-
-  $("#cursorInfo").textContent =
-    `Ln ${lines.length}, Col ${lines[lines.length - 1].length + 1}`;
-}
-
-function saveCurrentFile() {
-  files[activeLang] = editor.value;
-}
-
-function switchTab(lang) {
-  saveCurrentFile();
-  activeLang = lang;
-
-  document.querySelectorAll(".tab").forEach(tab => {
-    tab.classList.toggle("active", tab.dataset.lang === lang);
-  });
-
-  editor.value = files[lang];
-
-  $("#fileLabel").textContent = {
-    html: "index.html",
-    css: "style.css",
-    js: "script.js"
-  }[lang];
-
-  $("#languageInfo").textContent =
-    lang.toUpperCase() + " · UTF-8";
-
-  updateLineNumbers();
-  updateCursor();
-  editor.focus();
-}
-
-function persistProject() {
-  saveCurrentFile();
-
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(files));
-    $("#saveStatus").textContent = "SAVED LOCALLY";
-  } catch (error) {
-    $("#saveStatus").textContent = "SAVE UNAVAILABLE";
-  }
-}
-
-function restoreProject() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-
-    if (!saved || typeof saved !== "object") return;
-
-    for (const lang of ["html", "css", "js"]) {
-      if (typeof saved[lang] === "string") {
-        files[lang] = saved[lang];
-      }
-    }
-  } catch (error) {
-    // Invalid saved data: use the starter project.
-  }
-}
-
-function buildDocument(id) {
-  saveCurrentFile();
-
-  const doc = new DOMParser().parseFromString(
-    files.html,
-    "text/html"
-  );
-
-  const stylesheet = doc.createElement("style");
-  stylesheet.textContent = files.css;
-  doc.head.appendChild(stylesheet);
-
-  // Report logs from the isolated preview to the parent console.
-  const bridge = doc.createElement("script");
-
-  bridge.textContent = `
+  <script>
     (() => {
-      const runId = ${JSON.stringify(id)};
+      "use strict";
 
-      function report(type, args) {
-        const message = args.map(value => {
-          try {
-            if (value instanceof Error) return value.message;
-            if (typeof value === "string") return value;
-            return JSON.stringify(value) ?? String(value);
-          } catch {
-            return String(value);
+      const $ = (selector) => document.querySelector(selector);
+
+      const editors = {
+        html: $("#htmlEditor"),
+        css: $("#cssEditor"),
+        js: $("#jsEditor")
+      };
+
+      const preview = $("#preview");
+      const consoleBox = $("#console");
+      const status = $("#status");
+
+      const STORAGE_KEY = "webdev-project-v1";
+      let activeLanguage = "html";
+      let currentRunId = 0;
+
+      function setStatus(message) {
+        status.textContent = message;
+      }
+
+      function log(message, type = "log") {
+        const line = document.createElement("div");
+        line.textContent = "[" + type + "] " + message;
+
+        if (type === "error") line.style.color = "#ff8c8c";
+        if (type === "warn") line.style.color = "#e3c782";
+
+        consoleBox.appendChild(line);
+        consoleBox.scrollTop = consoleBox.scrollHeight;
+      }
+
+      function saveProject() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            html: editors.html.value,
+            css: editors.css.value,
+            js: editors.js.value
+          }));
+          setStatus("Saved locally");
+        } catch (error) {
+          setStatus("Local saving unavailable");
+        }
+      }
+
+      function loadProject() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+
+          if (saved) {
+            for (const language of ["html", "css", "js"]) {
+              if (typeof saved[language] === "string") {
+                editors[language].value = saved[language];
+              }
+            }
           }
-        }).join(" ");
-
-        parent.postMessage({
-          source: "webdev-engine",
-          runId,
-          type,
-          message
-        }, "*");
+        } catch (error) {
+          console.warn("Could not restore the saved project.");
+        }
       }
 
-      for (const method of ["log", "info", "warn", "error"]) {
-        const original = console[method].bind(console);
+      function buildDocument() {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(
+          editors.html.value || "<!DOCTYPE html><html><head></head><body></body></html>",
+          "text/html"
+        );
 
-        console[method] = (...args) => {
-          original(...args);
-          report(
-            method === "warn" ? "warn" :
-            method === "error" ? "error" : "log",
-            args
-          );
-        };
+        if (!doc.head) {
+          const head = doc.createElement("head");
+          doc.documentElement.prepend(head);
+        }
+
+        if (!doc.body) {
+          doc.documentElement.append(doc.createElement("body"));
+        }
+
+        const viewport = doc.createElement("meta");
+        viewport.name = "viewport";
+        viewport.content = "width=device-width, initial-scale=1";
+        doc.head.appendChild(viewport);
+
+        const css = doc.createElement("style");
+        css.textContent = editors.css.value;
+        doc.head.appendChild(css);
+
+        // Report console messages from the isolated preview.
+        const bridge = doc.createElement("script");
+        bridge.textContent = `
+          (() => {
+            const runId = ${currentRunId};
+            const send = (type, args) => {
+              let message;
+              try {
+                message = Array.from(args).map(value => {
+                  if (typeof value === "string") return value;
+                  try { return JSON.stringify(value); }
+                  catch { return String(value); }
+                }).join(" ");
+              } catch {
+                message = "Unable to format console message";
+              }
+
+              parent.postMessage({
+                source: "webdev-engine",
+                runId,
+                type,
+                message
+              }, "*");
+            };
+
+            ["log", "info", "warn", "error"].forEach(type => {
+              const original = console[type].bind(console);
+              console[type] = (...args) => {
+                send(type, args);
+                original(...args);
+              };
+            });
+
+            addEventListener("error", event => {
+              send("error", [event.message || "Script error"]);
+            });
+          })();
+        `;
+
+        doc.head.appendChild(bridge);
+
+        // Add the user's JavaScript as a separate script element.
+        const userScript = doc.createElement("script");
+        userScript.textContent = editors.js.value;
+        doc.body.appendChild(userScript);
+
+        return "<!DOCTYPE html>\n" + doc.documentElement.outerHTML;
       }
 
-      addEventListener("error", event => {
-        report("error", [
-          event.message || "JavaScript runtime error",
-          event.lineno ? "Line " + event.lineno : ""
-        ]);
+      function runCode() {
+        currentRunId++;
+        consoleBox.replaceChildren();
+        setStatus("Running…");
+
+        try {
+          preview.srcdoc = buildDocument();
+          setStatus("Preview updated");
+        } catch (error) {
+          log(error.message || String(error), "error");
+          setStatus("Preview failed");
+        }
+      }
+
+      function switchTab(language) {
+        activeLanguage = language;
+
+        for (const [key, editor] of Object.entries(editors)) {
+          editor.hidden = key !== language;
+        }
+
+        document.querySelectorAll("[data-language]").forEach(button => {
+          const selected = button.dataset.language === language;
+          button.classList.toggle("active", selected);
+          button.setAttribute("aria-selected", String(selected));
+        });
+      }
+
+      function exportHTML() {
+        const html = buildDocument();
+        const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.download = "webdev-project.html";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        setStatus("HTML exported");
+      }
+
+      function resetProject() {
+        const confirmed = confirm(
+          "Reset the editor to the starter project? Your current code will be replaced."
+        );
+
+        if (!confirmed) return;
+
+        localStorage.removeItem(STORAGE_KEY);
+        location.reload();
+      }
+
+      // Editor tabs.
+      document.querySelectorAll("[data-language]").forEach(button => {
+        button.addEventListener("click", () => {
+          switchTab(button.dataset.language);
+        });
       });
 
-      addEventListener("unhandledrejection", event => {
-        report("error", ["Unhandled promise rejection", event.reason]);
+      // Autosave when code changes.
+      Object.values(editors).forEach(editor => {
+        editor.addEventListener("input", saveProject);
+
+        editor.addEventListener("keydown", event => {
+          if (event.key === "Tab") {
+            event.preventDefault();
+
+            const start = editor.selectionStart;
+            const end = editor.selectionEnd;
+
+            editor.setRangeText("  ", start, end, "end");
+            saveProject();
+          }
+
+          if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+            event.preventDefault();
+            runCode();
+          }
+        });
       });
+
+      $("#runBtn").addEventListener("click", runCode);
+      $("#exportBtn").addEventListener("click", exportHTML);
+      $("#resetBtn").addEventListener("click", resetProject);
+      $("#clearConsoleBtn").addEventListener("click", () => {
+        consoleBox.replaceChildren();
+      });
+
+      // Preview width controls.
+      document.querySelectorAll("[data-width]").forEach(button => {
+        button.addEventListener("click", () => {
+          const width = button.dataset.width;
+          const shell = $(".preview-shell");
+
+          shell.style.display = "flex";
+          shell.style.justifyContent = "center";
+          preview.style.width = width;
+          preview.style.maxWidth = "100%";
+
+          document.querySelectorAll("[data-width]").forEach(item => {
+            item.setAttribute(
+              "aria-pressed",
+              String(item === button)
+            );
+          });
+        });
+      });
+
+      // Accept messages only from the current preview iframe and run.
+      window.addEventListener("message", event => {
+        if (event.source !== preview.contentWindow) return;
+
+        const data = event.data;
+
+        if (!data ||
+            data.source !== "webdev-engine" ||
+            data.runId !== currentRunId) {
+          return;
+        }
+
+        log(data.message, data.type);
+      });
+
+      loadProject();
+      switchTab(activeLanguage);
+      runCode();
+
+      // Register offline support when hosted on HTTPS or localhost.
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("./sw.js")
+            .then(() => console.log("WebDev offline support registered."))
+            .catch(error => {
+              console.warn("Service worker registration failed:", error);
+            });
+        });
+      }
     })();
-  `;
-
-  doc.head.prepend(bridge);
-
-  // Run user code after the HTML document has been parsed.
-  const userScript = doc.createElement("script");
-  userScript.textContent = files.js;
-  doc.body.appendChild(userScript);
-
-  return "<!DOCTYPE html>\n" + doc.documentElement.outerHTML;
-}
-
-function runCode() {
-  clearTimeout(debounceTimer);
-  saveCurrentFile();
-  persistProject();
-
-  const thisRun = ++runId;
-
-  clearConsole();
-  status.textContent = "● RUNNING";
-  status.style.color = "var(--gold)";
-
-  try {
-    const html = buildDocument(thisRun);
-
-    preview.srcdoc = html;
-    $("#address").value = "webdev://local-preview";
-
-    addLog("Building preview document...");
-    addLog("Submitting HTML, CSS and JavaScript to the browser renderer.");
-  } catch (error) {
-    addLog(error.message, "error");
-    status.textContent = "● ERROR";
-    status.style.color = "var(--red)";
-    return;
-  }
-
-  clearTimeout(executionTimer);
-
-  executionTimer = setTimeout(() => {
-    if (thisRun !== runId) return;
-
-    status.textContent = "● READY";
-    status.style.color = "var(--green)";
-  }, 1000);
-}
-
-function resetProject() {
-  const confirmed = confirm(
-    "Reset HTML, CSS and JavaScript to the starter project?"
-  );
-
-  if (!confirmed) return;
-
-  files = { ...defaults };
-  switchTab("html");
-  persistProject();
-  runCode();
-}
-
-function exportProject() {
-  saveCurrentFile();
-
-  // Export the combined website, including its CSS and JavaScript.
-  const html = buildDocument(runId + 1);
-  const blob = new Blob(
-    [html],
-    { type: "text/html;charset=utf-8" }
-  );
-
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-
-  link.href = url;
-  link.download = "webdev-project.html";
-  link.click();
-
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-
-  addLog("Exported webdev-project.html");
-}
-
-document.querySelectorAll(".tab").forEach(tab => {
-  tab.addEventListener("click", () => switchTab(tab.dataset.lang));
-});
-
-document.querySelectorAll("[data-size]").forEach(button => {
-  button.addEventListener("click", () => {
-    $("#device").className = "device " + button.dataset.size;
-  });
-});
-
-editor.addEventListener("input", () => {
-  saveCurrentFile();
-  updateLineNumbers();
-  updateCursor();
-  persistProject();
-
-  clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(runCode, 900);
-});
-
-editor.addEventListener("scroll", updateLineNumbers);
-editor.addEventListener("click", updateCursor);
-editor.addEventListener("keyup", updateCursor);
-
-editor.addEventListener("keydown", event => {
-  if (event.key === "Tab") {
-    event.preventDefault();
-
-    editor.setRangeText(
-      "  ",
-      editor.selectionStart,
-      editor.selectionEnd,
-      "end"
-    );
-
-    editor.dispatchEvent(new Event("input"));
-  }
-
-  if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
-    event.preventDefault();
-    runCode();
-  }
-});
-
-$("#runBtn").addEventListener("click", runCode);
-$("#refreshBtn").addEventListener("click", runCode);
-$("#resetBtn").addEventListener("click", resetProject);
-$("#clearBtn").addEventListener("click", clearConsole);
-$("#clearOutputBtn").addEventListener("click", clearConsole);
-$("#exportBtn").addEventListener("click", exportProject);
-
-preview.addEventListener("load", () => {
-  status.textContent = "● READY";
-  status.style.color = "var(--green)";
-});
-
-window.addEventListener("message", event => {
-  if (event.source !== preview.contentWindow) return;
-
-  const data = event.data;
-
-  if (!data || data.source !== "webdev-engine") return;
-  if (data.runId !== runId) return;
-
-  const types = {
-    log: "log",
-    info: "log",
-    warn: "warn",
-    error: "error"
-  };
-
-  if (!types[data.type]) return;
-
-  addLog(data.message, types[data.type]);
-});
-
-restoreProject();
-switchTab("html");
-runCode();
-</script>
+  </script>
 </body>
 </html>
