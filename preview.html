@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="no-referrer">
+  <title>WebDev Preview Renderer</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      background: #ffffff;
+      color: #171717;
+      font-family: Arial, sans-serif;
+    }
+
+    #renderer {
+      min-height: 100vh;
+    }
+
+    #renderer-error {
+      display: none;
+      margin: 20px;
+      padding: 16px;
+      border: 1px solid #dba5a5;
+      border-radius: 8px;
+      background: #fff1f1;
+      color: #8b2020;
+      font: 13px/1.6 monospace;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+  </style>
+</head>
+
+<body>
+  <main id="renderer"></main>
+  <pre id="renderer-error" role="alert"></pre>
+
+  <script>
+    "use strict";
+
+    /*
+     * WebDev Preview Renderer
+     * Receives source code from a trusted parent window.
+     *
+     * This page is a renderer host, not a new browser engine.
+     * The actual HTML/CSS/JS execution is provided by the browser.
+     */
+
+    const renderer = document.getElementById("renderer");
+    const errorPanel = document.getElementById("renderer-error");
+
+    function showError(message) {
+      errorPanel.style.display = "block";
+      errorPanel.textContent = String(message);
+    }
+
+    /*
+     * This page is not intended to be opened directly.
+     * The parent must provide the document source.
+     *
+     * Do not add permissive message handling here:
+     * the parent should create a sandboxed iframe with srcdoc
+     * and render the user's project inside that iframe.
+     */
+
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.has("code")) {
+      showError(
+        "Direct URL-based code execution is disabled. " +
+        "Open your project through the WebDev editor instead."
+      );
+    }
+  </script>
+</body>
+</html>
